@@ -104,3 +104,7 @@ h3 {
 #scroll-btn-container {
   text-align: center;
 }
+
+.warn {
+  font-style: italic;
+}

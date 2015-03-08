@@ -20,13 +20,15 @@ var drawFrequencies = function(ctx, analyser, freqs, primaryTone, startFreq, end
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   ctx.fillStyle = "rgb(0,0,0)";
 
-  var maxVolume = 255;
   var primaryVolume = freqs[primaryTone];
+  // For some reason, primaryVolume becomes 0 on firefox, I have no idea why
+  if (primaryVolume == 0) {
+    primaryVolume = 255;
+  }
   for (var i = 0; i < (endFreq-startFreq); i++) {
     var volume = freqs[startFreq+i];
     var normalizedX = Math.floor( i/(endFreq-startFreq) * ctx.canvas.width );
     var normalizedY = Math.floor( 0.9 * volume/primaryVolume * ctx.canvas.height );
-    //var normalizedY = Math.floor( 0.9 * volume/maxVolume * ctx.canvas.height );
     ctx.fillRect( normalizedX, ctx.canvas.height - normalizedY - 5, 5, 5 );
   }
 };

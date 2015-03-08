@@ -49,6 +49,9 @@
         </div>
       </div>
       <p>
+        <span class="warn">Note that you'll need to run Chrome with a fairly high speaker-volume for this to work optimally.</span>
+      </p>
+      <p>
         The frequency spectrum of the microphone input is plotted above. The peak towards the right
         is due to the 20 kHz tone we're sending out. Try <span data-note="440" class="data-note">whistling</span> to see the spectrum change.
       </p>
@@ -75,7 +78,7 @@
         The most obvious application for this is motion sensing.
         Below I've calculated the left and right bandwidth of the 20 kHz
         region (defined as the number of frequencies to the left and right
-        that are within 90% in amplitude of the 20 kHz tone).
+        that are within 99.9% in amplitude of the 20 kHz tone).
         I've then attached their difference to the size of the box.
       </p>
       <canvas id="ball" width="700" height="100"></canvas>
@@ -132,15 +135,27 @@
 
       <h2>Library</h2>
       <p>
-        Did this give you any ideas?
-        I also created a small
+        Did this give you any ideas? I also created <a href="https://github.com/DanielRapp/doppler">a small library</a> to play around with this.
+        Just run
+      </p>
+        <pre><code class="javascript">
+  doppler.init(function(bandwidth) {
+    var diff = bandwidth.left - bandwidth.right;
+  });
+        </code></pre>
+      <p>
+        to start experimenting.
       </p>
 
       <div id="author">
         Written by <a href="https://github.com/DanielRapp">Daniel Rapp</a>.
-        Check out the code for this <a href="">on Github</a>.
+        Check out the code for this <a href="https://github.com/DanielRapp/doppler">on Github</a>.
       </div>
     </div>
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
@@ -152,7 +167,8 @@
         document.getElementById('btn-activate').addEventListener('click', function(e) {
           var self = this;
 
-          navigator.webkitGetUserMedia({ audio: { optional: [{ echoCancellation: false }] } }, function(stream) {
+          navigator.getUserMedia_ = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
+          navigator.getUserMedia_({ audio: { optional: [{ echoCancellation: false }] } }, function(stream) {
             handleMic(stream, readMic);
             showAxes();
 
