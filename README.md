@@ -4,9 +4,9 @@ on the web. It enables you to detect motion using _only_ the microphone and spea
 
 ## How to use it
 Just run it like this
-``javascript
+```javascript
 doppler.init(function(bandwidth) {
   console.log(bandwidth.left - bandwidth.right);
 });
-``
+```
 See more in [example.html](example.html).
