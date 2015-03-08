@@ -1,0 +1,230 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css">
+  </head>
+  <body>
+    <div id="content">
+      <h1>Motion sensing using the doppler effect</h1>
+      <p>
+        Recently I stumbled upon <a href="http://research.microsoft.com/en-us/um/redmond/groups/cue/publications/guptasoundwavechi2012.pdf">an interesting paper</a> for
+        implementing motion sensing requiring no special hardware, <i>only a speaker and mic</i>! Unfortunately the paper didn't include
+        code to test it, so I decided to reproduce it here on the web!
+      </p>
+      <h2>What is the doppler effect?</h2>
+      <p>
+        First of all, what is the doppler effect?
+        The <a href="http://en.wikipedia.org/wiki/Doppler_effect">doppler effect</a> is a physical phenomenom which affects waves in motion.
+        The standard example is the effect on a fire engine siren as it quickly drives
+        past. When it moves <i>towards</i> you the sound waves are compressed, and so the
+        frequency becomes <i>higher</i>, and
+        when it moves <i>away</i> from you the frequency becomes <i>lower</i>.
+      </p>
+      <div id="doppler-video"></div>
+      <p>
+        This phenomenon actually has really wonderful applications in astronomy for figuring the speed
+        at which galaxies are moving towards or away from us by looking at the frequency shift of light,
+        but I digress.
+      </p>
+      <p>
+        Anyway, it's important to realize that the doppler effect would also occur
+        if you were to run towards the siren, rather than the siren moving towards you.
+        We'll use this principle in the next section.
+      </p>
+
+      <h2>Measuring the doppler effect</h2>
+      <p>
+        In order to measure the doppler effect for motion detection on a conventional computer,
+        what you can do is send out a sinusoid at some known (inaudible) frequency, say, 20 kHz.
+        If something is moving in the room, then, after the sinusoid has bounced around on the walls and into the microphone, the
+        sound will shift in frequency. This can be measured by looking at the frequency spectrum
+        in the nearby region of the 20 kHz tone.
+      </p>
+      <div>
+        <canvas id="spectrum" width="700" height="100"></canvas>
+        <button id="btn-activate" class="pure-button pure-button-primary">Press to see the effect of a 20 kHz tone, after it has bounced around the room</button>
+        <div id="spectrum-axes">
+          <span class="left-axis">0 kHz</span><span class="right-axis">22 kHz</span>
+        </div>
+      </div>
+      <p>
+        The frequency spectrum of the microphone input is plotted above. The peak towards the right
+        is due to the 20 kHz tone we're sending out. Try <span data-note="440" class="data-note">whistling</span> to see the spectrum change.
+      </p>
+      <div>
+        <canvas id="spectrum-zoom" width="700" height="100"></canvas>
+        <div id="spectrum-zoom-axes">
+          <span class="left-axis">19 kHz</span> <span class="right-axis">21 kHz</span>
+        </div>
+      </div>
+      <p>
+        Here's a closer look, zooming in on the 20 kHz region.
+        Try moving your hand <i>towards</i>
+        the mic/computer to see the bulge shift to <i>higher</i> frequencies, and
+        <i>away</i> from the computer to see it shift to <i>lower</i> frequencies.
+      </p>
+
+      <h2>Applications</h2>
+      <p>
+        Now for the fun applications!
+      </p>
+
+      <h3>Motion sensing</h3>
+      <p>
+        The most obvious application for this is motion sensing.
+        Below I've calculated the left and right bandwidth of the 20 kHz
+        region (defined as the number of frequencies to the left and right
+        that are within 90% in amplitude of the 20 kHz tone).
+        I've then attached their difference to the size of the box.
+      </p>
+      <canvas id="ball" width="700" height="100"></canvas>
+      <p>
+        The effect this produces is that when you move your hand <i>towards</i>
+        the microphone, the box becomes smaller (you're <i>pushing</i>
+        it inwards), and if you move your hand <i>away</i> from the microphone,
+        the box becomes larger (you're <i>pulling</i> it outwards).
+      </p>
+
+      <h3>Scrolling</h3>
+      <div id="scrolling-video"></div>
+      <p>
+        A cool application to motion sensing, as suggested by the
+        <a href="http://research.microsoft.com/en-us/um/redmond/groups/cue/publications/guptasoundwavechi2012.pdf">SoundWave paper</a>,
+        is scrolling (see the video above). Click below to try it out.
+      </p>
+      <div id="scroll-btn-container">
+        <button id="scroll-btn"
+                class="pure-button pure-button-primary"
+                data-active-text="Stop scrolling hands-free"
+                data-inactive-text="Start scrolling hands-free">
+          Start hands-free scrolling
+        </button>
+      </div>
+      <p>
+        This implementation doesn't have the double-tap feature for reversing
+        the scrolling-direction, instead it's just using the left and right bandwidth-difference.
+        Thus if you want to scroll down you have to move your hand
+        <i>quickly towards</i> the computer, and <i>slowly away</i> from the computer.
+      </p>
+
+      <h3>Theremin</h3>
+      <div id="theremin-video"></div>
+      <p>
+        We can also create an instrument with this by simply modulating
+        the frequency of some base-tone, say at 440 Hz, based on the
+        difference between the left and right bandwidth!
+      </p>
+      <div id="theremin-btn-container">
+        <button id="theremin-btn"
+                class="pure-button pure-button-primary"
+                data-active-text="Stop instrument"
+                data-inactive-text="Start instrument">
+          Start instrument
+        </button>
+      </div>
+      <p>
+        This is reminiscent of a Theremin, in that you can contol
+        sound by moving your hands in free space, yet different
+        in that the Theremin is able to measure absolute distance from the base,
+        whereas we can only measure relative motion.
+      </p>
+
+      <h2>Library</h2>
+      <p>
+        Did this give you any ideas?
+        I also created a small
+      </p>
+
+      <div id="author">
+        Written by <a href="https://github.com/DanielRapp">Daniel Rapp</a>.
+        Check out the code for this <a href="">on Github</a>.
+      </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="libs/data-note.js"></script>
+    <script src="script.js"></script>
+    <script src="viz.js"></script>
+    <script>
+      window.addEventListener('load', function(e) {
+        document.getElementById('btn-activate').addEventListener('click', function(e) {
+          var self = this;
+
+          navigator.webkitGetUserMedia({ audio: { optional: [{ echoCancellation: false }] } }, function(stream) {
+            handleMic(stream, readMic);
+            showAxes();
+
+            // Self-destruct!
+            self.parentNode.removeChild(self);
+          }, function() { console.log('Error!') });
+        });
+      });
+
+      function onYouTubeIframeAPIReady() {
+        new YT.Player('theremin-video', {
+          videoId: 'w5qf9O6c20o',
+          width: '700',
+          height: '200',
+          playerVars: {
+            start: 15,
+            controls: 0,
+            autoplay: 0,
+            disablekb: 1,
+            enablejsapi: 1,
+            iv_load_policy: 3,
+            modestbranding: 1,
+            showinfo: 0
+          },
+          events: {
+            onReady: function(e) {
+              e.target.setVolume(20);
+            }
+          }
+        });
+
+        new YT.Player('scrolling-video', {
+          videoId: 'rFM59B3tYI4',
+          width: '700',
+          height: '200',
+          playerVars: {
+            start: 77,
+            controls: 0,
+            autoplay: 0,
+            disablekb: 1,
+            enablejsapi: 1,
+            iv_load_policy: 3,
+            modestbranding: 1,
+            showinfo: 0
+          }
+        });
+
+        new YT.Player('doppler-video', {
+          videoId: 'imoxDcn2Sgo',
+          width: '700',
+          height: '200',
+          playerVars: {
+            start: 7,
+            controls: 0,
+            autoplay: 0,
+            disablekb: 1,
+            enablejsapi: 1,
+            iv_load_policy: 3,
+            modestbranding: 1,
+            showinfo: 0
+          },
+          events: {
+            onReady: function(e) {
+              // I intentionally set the volume of this
+              // to be really low, so that the user will increase
+              // his/her volume (since the motion sensing works
+              // best at a high volume).
+              e.target.setVolume(4);
+            }
+          }
+        });
+      }
+    </script>
+  </body>
+</html>
