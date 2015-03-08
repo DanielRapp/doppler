@@ -10,3 +10,6 @@ doppler.init(function(bandwidth) {
 });
 ```
 See more in [example.html](example.html). Read more about the theory of how this works [on the github-pages site](http://danielrapp.github.io/doppler/).
+
+## Firefox?
+Unfortunately this doesn't work on Firefox since doesn't seem to support the `echoCancellation: false` parameter to navigator.getUserMedia. This means there's no way to turn off it filtering out the sounds which are coming from the computer itself (which is precisely what we want to measure!)
