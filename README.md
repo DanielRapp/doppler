@@ -9,4 +9,4 @@ doppler.init(function(bandwidth) {
   console.log(bandwidth.left - bandwidth.right);
 });
 ```
-See more in [example.html](example.html).
+See more in [example.html](example.html). Read more about the theory of how this works [http://danielrapp.github.io/doppler/](on the github-pages site).
