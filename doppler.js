@@ -75,6 +75,7 @@ window.doppler = (function() {
     }
   };
 
+  var readMicInterval = 0;
   var readMic = function(analyser, userCallback) {
     var audioData = new Uint8Array(analyser.frequencyBinCount);
     analyser.getByteFrequencyData(audioData);
@@ -82,7 +83,7 @@ window.doppler = (function() {
     var band = getBandwidth(analyser, audioData);
     userCallback(band);
 
-    setTimeout(readMic.bind(null, analyser, userCallback), 1);
+    readMicInterval = setTimeout(readMic, 1, analyser, userCallback);
   };
 
   var handleMic = function(stream, callback, userCallback) {
@@ -109,6 +110,7 @@ window.doppler = (function() {
       freq = optimizeFrequency(osc, analyser, 19000, 22000);
       osc.frequency.value = freq;
 
+      clearInterval(readMicInterval);
       callback(analyser, userCallback);
     });
   };
@@ -119,6 +121,9 @@ window.doppler = (function() {
       navigator.getUserMedia_({ audio: { optional: [{ echoCancellation: false }] } }, function(stream) {
         handleMic(stream, readMic, callback);
       }, function() { console.log('Error!') });
+    },
+    stop: function () {
+      clearInterval(readMicInterval);
     }
   }
 })(window, document);
