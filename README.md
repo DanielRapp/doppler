@@ -25,3 +25,4 @@ Here's what is most needed:
   primary tone’s energy is found, the first scan is repeated to
   find amplitude drops calculated from the second peak. 
 ```
+  This can/should all occur in the `getBandwidth` function.
