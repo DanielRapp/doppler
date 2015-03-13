@@ -11,10 +11,7 @@ doppler.init(function(bandwidth) {
 ```
 See more in [example.html](example.html). Read more about the theory of how this works [on the github-pages site](http://danielrapp.github.io/doppler/).
 
-## Firefox?
-Unfortunately this doesn't work on Firefox since it doesn't seem to support the `echoCancellation: false` parameter to navigator.getUserMedia. This means there's no way to turn off it filtering out the sounds which are coming from the computer itself (which is precisely what we want to measure).
-
-## Contribute?
+## What to contribute?
 What to contribute?
 Here's what is most needed:
 
@@ -33,3 +30,6 @@ In the [SoundWave paper](http://research.microsoft.com/en-us/um/redmond/groups/c
 > find amplitude drops calculated from the second peak.
 
 This improvement can/should all occur in the `getBandwidth` function.
+
+## Firefox?
+Unfortunately this doesn't work on Firefox since it doesn't seem to support the `echoCancellation: false` parameter to navigator.getUserMedia. This means there's no way to turn off it filtering out the sounds which are coming from the computer itself (which is precisely what we want to measure).
