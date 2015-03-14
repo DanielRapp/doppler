@@ -7,6 +7,7 @@ window.doppler = (function() {
 
   var ctx = new AuContext();
   var osc = ctx.createOscillator();
+
   // This is just preliminary, we'll actually do a quick scan
   // (as suggested in the paper) to optimize this.
   var freq = 20000;
@@ -14,27 +15,42 @@ window.doppler = (function() {
   // See paper for this particular choice of frequencies
   var relevantFreqWindow = 33;
 
+// Settings and variables to attempt auto-calibration
+  var calibrationData = {
+    calibrationOn: true,
+    previousDiff: 0,
+    previousDirection: 0,
+    directionChanges: 0,
+    iteration: 0,
+    maxVolumeRatio: 0.01,
+    iterationCycles: 20,
+    upThreshold: 5,
+    downThreshold: 0,
+    upAmount: 1.1,
+    downAmount: 0.95
+  };
+
   var getBandwidth = function(analyser, freqs) {
     var primaryTone = freqToIndex(analyser, freq);
     var primaryVolume = freqs[primaryTone];
     // This ratio is totally empirical (aka trial-and-error).
-    var maxVolumeRatio = 0.001;
+    var maxVolumeRatio = 0.01;
 
     var leftBandwidth = 0;
     do {
       leftBandwidth++;
       var volume = freqs[primaryTone-leftBandwidth];
       var normalizedVolume = volume / primaryVolume;
-    } while (normalizedVolume > maxVolumeRatio && leftBandwidth < relevantFreqWindow);
+    } while (normalizedVolume > calibrationData.maxVolumeRatio && leftBandwidth < relevantFreqWindow);
 
     var rightBandwidth = 0;
     do {
       rightBandwidth++;
       var volume = freqs[primaryTone+rightBandwidth];
       var normalizedVolume = volume / primaryVolume;
-    } while (normalizedVolume > maxVolumeRatio && rightBandwidth < relevantFreqWindow);
+    } while (normalizedVolume > calibrationData.maxVolumeRatio && rightBandwidth < relevantFreqWindow);
 
-    return { left: leftBandwidth, right: rightBandwidth };
+    return { left: leftBandwidth, right: rightBandwidth, diff: leftBandwidth-rightBandwidth };
   };
 
   var freqToIndex = function(analyser, freq) {
@@ -81,6 +97,7 @@ window.doppler = (function() {
     analyser.getByteFrequencyData(audioData);
 
     var band = getBandwidth(analyser, audioData);
+    if (calibrationData.calibrationOn == true) autoCalibrate(band);
     userCallback(band);
 
     readMicInterval = setTimeout(readMic, 1, analyser, userCallback);
@@ -115,6 +132,45 @@ window.doppler = (function() {
     });
   };
 
+// 1 if positive, -1 if negative, 0 all other times, including errors.
+  var sign = function(x) {
+    return typeof x === 'number' ? x ? x < 0 ? -1 : 1 : x === x ? 0 : 0 : 0;
+  }
+
+  // Try to auto-calibrate by looking for a large number of directional flip-flops
+  var autoCalibrate = function(band) {
+    var cd = calibrationData; //alias
+    var direction = sign(band.diff);
+
+    // If the direction has changed, count the flip
+    if (cd.previousDirection != direction) {
+      cd.directionChanges++;
+      cd.previousDirection = direction;
+    }
+
+    // Increment the iteration counter and only calibrate after X cycles
+    cd.iteration = ((cd.iteration + 1) % cd.iterationCycles);
+    if (cd.iteration == 0) {
+      if (cd.directionChanges >= cd.upThreshold) cd.maxVolumeRatio *= cd.upAmount;
+      if (cd.directionChanges <= cd.downThreshold) cd.maxVolumeRatio *= cd.downAmount;
+
+      // Bound the volume ratio to prevent irrecoverable errors
+      cd.maxVolumeRatio = Math.min(0.95, cd.maxVolumeRatio);
+      cd.maxVolumeRatio = Math.max(0.0001, cd.maxVolumeRatio);
+      cd.directionChanges = 0;
+    }
+
+    // Uncomment for sanity check so you can see if this is working
+    //console.log(cd.maxVolumeRatio);
+  };
+
+  var calibrate = function(newVal) {
+    if (typeof newVal == "boolean") {
+      calibrationData.calibrationOn = newVal;
+    }
+    return calibrationData.calibrationOn;
+  };
+
   return {
     init: function(callback) {
       navigator.getUserMedia_ = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
@@ -124,7 +180,8 @@ window.doppler = (function() {
     },
     stop: function () {
       clearInterval(readMicInterval);
-    }
+    },
+    calibrate: calibrate
   }
 })(window, document);
 
