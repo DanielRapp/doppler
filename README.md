@@ -9,7 +9,7 @@ doppler.init(function(bandwidth) {
   console.log(bandwidth.left - bandwidth.right);
 });
 ```
-See more in [example.html](example.html). (Note that doppler uses `navigator.getUserMedia`, which can't be run on the local filesystem, so you'll have to start a server to run this. E.g. with `python -m SimpleHTTPServer`) Read more about the theory of how this works [on the github-pages site](http://danielrapp.github.io/doppler/).
+See more in [example.html](example.html). (Note that doppler uses `navigator.getUserMedia`, which can't be run on the local filesystem, so you'll have to start a server to run this. E.g. with `python -m SimpleHTTPServer`.) Read more about the theory of how this works [on the github-pages site](http://danielrapp.github.io/doppler/).
 
 ## What to contribute?
 What to contribute?
