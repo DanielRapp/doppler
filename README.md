@@ -35,4 +35,5 @@ This improvement can/should all occur in the `getBandwidth` function.
 Unfortunately this doesn't work on Firefox since it doesn't seem to support the `echoCancellation: false` parameter to navigator.getUserMedia. This means there's no way to turn off it filtering out the sounds which are coming from the computer itself (which is precisely what we want to measure).
 
 ## Derivatives
-The awesome [Jasper Lu](https://github.com/jasper-lu) implemented a version of this [to android](https://github.com/jasper-lu/doppler-android). [Go check it out](https://github.com/jasper-lu/doppler-android)!
+* The awesome [Jasper Lu](https://github.com/jasper-lu) implemented a version of this [to android](https://github.com/jasper-lu/doppler-android). [Go check it out](https://github.com/jasper-lu/doppler-android)!
+* The wonderful [Harrison Green](https://github.com/hgarrereyn) wrote a [chrome extension](https://chrome.google.com/webstore/detail/audioscroll-extension/nknlpaccngmmdfjcbjkccfmoimehdeli?hl=en-US&gl=US) for this!
