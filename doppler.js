@@ -18,21 +18,60 @@ window.doppler = (function() {
     var primaryTone = freqToIndex(analyser, freq);
     var primaryVolume = freqs[primaryTone];
     // This ratio is totally empirical (aka trial-and-error).
-    var maxVolumeRatio = 0.001;
+    var maxVolumeRatio = 0.1;
+    var secondPeakRatio = 0.3;
 
+	var secondScanFlag = 0;
     var leftBandwidth = 0;
+    var secondScanLeftBandwidth = 0;
     do {
       leftBandwidth++;
       var volume = freqs[primaryTone-leftBandwidth];
       var normalizedVolume = volume / primaryVolume;
     } while (normalizedVolume > maxVolumeRatio && leftBandwidth < relevantFreqWindow);
+    
+    secondScanLeftBandwidth = leftBandwidth;
+    
+    do {
+    	secondScanLeftBandwidth++;
+    	var volume = freqs[primaryTone-secondScanLeftBandwidth];
+      	var normalizedVolume = volume / primaryVolume;
 
+      	if(normalizedVolume >= secondPeakRatio)
+      		secondScanFlag = 1;
+
+      	if(secondScanFlag == 1 && normalizedVolume < maxVolumeRatio)
+      		break;
+    } while (secondScanLeftBandwidth < relevantFreqWindow);
+    
+    if(secondScanFlag == 1)
+    	leftBandwidth = secondScanLeftBandwidth;
+
+    secondScanFlag = 0;
     var rightBandwidth = 0;
+    var secondScanRightBandwidth = 0;
     do {
       rightBandwidth++;
       var volume = freqs[primaryTone+rightBandwidth];
       var normalizedVolume = volume / primaryVolume;
     } while (normalizedVolume > maxVolumeRatio && rightBandwidth < relevantFreqWindow);
+
+	secondScanRightBandwidth = rightBandwidth;
+    
+    do {
+    	secondScanRightBandwidth++;
+    	var volume = freqs[primaryTone+secondScanRightBandwidth];
+      	var normalizedVolume = volume / primaryVolume;
+      	
+      	if(normalizedVolume >= secondPeakRatio)
+      		secondScanFlag = 1;
+      	
+      	if(secondScanFlag == 1 && normalizedVolume < maxVolumeRatio)
+      		break;
+    } while (secondScanRightBandwidth < relevantFreqWindow);
+    
+    if(secondScanFlag == 1)
+    	rightBandwidth = secondScanRightBandwidth;
 
     return { left: leftBandwidth, right: rightBandwidth };
   };
