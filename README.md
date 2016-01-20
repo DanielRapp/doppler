@@ -1,5 +1,5 @@
 # Motion sensing using the doppler effect
-[This is an implementation](http://danielrapp.github.io/doppler/) of the [SoundWave paper](http://research.microsoft.com/en-us/um/redmond/groups/cue/publications/guptasoundwavechi2012.pdf)
+[This is an implementation](https://danielrapp.github.io/doppler/) of the [SoundWave paper](http://research.microsoft.com/en-us/um/redmond/groups/cue/publications/guptasoundwavechi2012.pdf)
 on the web. It enables you to detect motion using only the microphone and speakers!
 
 ## How to use it
@@ -9,7 +9,7 @@ doppler.init(function(bandwidth) {
   console.log(bandwidth.left - bandwidth.right);
 });
 ```
-See more in [example.html](example.html). (Note that doppler uses `navigator.getUserMedia`, which can't be run on the local filesystem, so you'll have to start a server to run this. E.g. with `python -m SimpleHTTPServer`.) Read more about the theory of how this works [on the github-pages site](http://danielrapp.github.io/doppler/).
+See more in [example.html](example.html). (Note that doppler uses `navigator.getUserMedia`, which can't be run on the local filesystem, so you'll have to start a server to run this. E.g. with `python -m SimpleHTTPServer`.) Read more about the theory of how this works [on the github-pages site](https://danielrapp.github.io/doppler/).
 
 ## What to contribute?
 What to contribute?
