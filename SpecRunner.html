@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>Mocha Spec Runner</title>
+
+    <!-- testing frameworks -->
+    <link rel="stylesheet" href="lib/mocha/mocha.css">
+    <script src="lib/jquery-1.8.3.js"></script>
+    <script src="lib/mocha/mocha.js"></script>
+    <script src="lib/chai/chai.js"></script>
+<!--     // <script src="lib/sinon/sinon.js"></script> -->
+    <script>
+      mocha.setup('bdd');
+      window.expect = chai.expect;
+      $(function() {
+        window.mochaPhantomJS ? mochaPhantomJS.run() : mocha.run();
+      });
+    </script>
+
+    <!-- source files -->
+    <script src="doppler.js"></script>
+
+    <!-- tests -->
+    <script src="spec/dopplerSpec.js"></script>
+  </head>
+  <body>
+    <div id="mocha"></div>
+  </body>
+</html>
