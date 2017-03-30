@@ -1,4 +1,4 @@
-window.doppler = (function() {
+(function() {
   var AuContext = (window.AudioContext ||
                    window.webkitAudioContext ||
                    window.mozAudioContext ||
@@ -115,7 +115,7 @@ window.doppler = (function() {
     });
   };
 
-  return {
+  var api = {
     init: function(callback) {
       navigator.getUserMedia_ = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
       navigator.getUserMedia_({ audio: { optional: [{ echoCancellation: false }] } }, function(stream) {
@@ -125,6 +125,12 @@ window.doppler = (function() {
     stop: function () {
       clearInterval(readMicInterval);
     }
+  }
+
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = api
+  } else {
+    window.doppler = api
   }
 })(window, document);
 
